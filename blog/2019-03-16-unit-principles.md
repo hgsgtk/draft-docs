@@ -1,5 +1,6 @@
 # TL;DR
-- ユニットテストの原則を『xUnit Test Patterns: Refactoring Test Code』から抑える
+- ユニットテストの原則を『xUnit Test Patterns: Refactoring Test Code』からおさえる
+- 他書籍でもそれを支持する主張は多く見られる
 
 [xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)
 2007年に販売された書籍
@@ -11,29 +12,64 @@ http://xunitpatterns.com/
 Chapter5 Principles of Test Automation
 
 # ユニットテストの原則
-## The Principles
-- Write the Tests First
-- Design for Tesability
-- Use the Front Door First
-- Communicate Intent
-- Don't Modify the SUT
-- Keep Tests Independent
-- Isolate the SUT
-- Minimize Test Overlap
-- Minimize Untestable Code
-- Keep Test Logic Out of Production
-- Verify One Condition per Test
-- Test Concerns Separately
+ユニットテストで確認したい quality のリストが次の原則です。ですので、直接適用する「パターン」ではありません。
+「何をやるか」よりも「なぜやるのか」という観点においてまとめられています。
+本記事では、[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)で紹介されている12個の原則をベースに、ほか書籍や筆者の経験なども踏まえつつ「ユニットテストの原則」をおさえていきます。
 
-## the definition of SUT
+## The Principles by xUnit Test Patterns
+1. Write the Tests First
+2. Design for Testability
+3. Use the Front Door First
+4. Communicate Intent
+5. Don't Modify the SUT
+6. Keep Tests Independent
+7. Isolate the SUT
+8. Minimize Test Overlap
+9. Minimize Untestable Code
+10. Keep Test Logic Out of Production
+11. Verify One Condition per Test
+12. Test Concerns Separately
 
-## Write the Tests First
+## Write the Tests First （テストを最初に書く）
+*Test-Driven Development(TDD)* あるいは *Test-First Development* として知られる原則です。TDDを支持する理由として主に２つあります。
 
-## Design for Tesability
+### デバッグ作業の手間が省ける
+ユニットテストを書くことによってデバッグ作業の手間が省けます。たとえば、ひとつのクラス・関数をデバッグする際に実行できるユニットテストがない場合、手動での実行などになります。ユニットテストを用意することによってデバッグ対象を単体で実行できるので、デバッグ作業の手間は大きく下がります。
 
-## Use the Front Door First
+### テスト容易性が強制される
+コードを書く前にテストを書くことによって、テスト容易な設計が自然と強制されます。なぜなら、テストを書くには、テスト容易な設計である必要があるからです。
+コードの設計とテスト容易な設計という観点を別観点として分けて考える必要がなくなります。
 
-## Communicate Intent
+#### 筆者補足：テストファーストと「よい設計」
+ただし現実的には、テストを書いたからといって「よい設計」が生まれるわけではなく、テストをするための「多少の再利用性」が得られるという効用です。
+[オブジェクト指向設計実践ガイド ～Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方](https://gihyo.jp/book/2016/978-4-7741-8361-9)という書籍の「第9章 費用対効果の高いテストを設計する」では、「*初級の設計者はテストファーストでコードを書くことが最も有益です。*」と書かれています。
+訓練として、テストを最初に書くアプローチを実践して習得することは最低限の成果を実現するために非常に有用といえます。
+
+## Design for Testability （テスト容易性を設計する）
+「Write the Tests First」をしない選択をしなかったなど、テスト容易性が設計されていないコードに対してよりこの原則が重要です。レガシーソフトウェアに対するユニットテストの難しさは、この設計がされていないことによって引き起こります。
+
+この課題に対して、Michael Feathers氏が、[Working Effectively with Legacy Code](https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052)や[レガシーコード改善ガイド](https://www.shoeisha.co.jp/book/detail/9784798116839)といった書籍でテクニックを紹介しています。
+
+## Use the Front Door First （最初に正面玄関を使う）
+*Front Door First* とも呼ばれます。オブジェクトは、外部から利用することを期待される *public* インタフェースや、内部からのみ利用することを期待される *private* インタフェースがあります。
+テストによって使用するインタフェースは、それぞれテストの堅牢性に影響を与えます。
+フィクスチャを設定したり、予想される結果やテストを検証するために *バックドア操作* を使用すると、テストのメンテナンスを頻繁に行う必要がある状態になります。それは、壊れやすいテスト（*Fragile Test*）」のひとつ *Overcoupled Software* と呼ばれています。
+また、振る舞い検証およびモックオブジェクトの過剰使用は、これまた壊れやすいテスト（*Fragile Test*）のひとつ *Overspecified Software* と呼ばれる状況になります。それによって、テストがより脆弱になり、開発者のリファクタリングを妨げる可能性があります。
+
+すべての選択肢が等しく有効であれば、[round trip test](http://xunitpatterns.com/round%20trip%20test.html) を用いるべきです。[round trip test](http://xunitpatterns.com/round%20trip%20test.html) とは、 *front door(public interface)* のみを介してテスト対象システム（[SUT](http://xunitpatterns.com/SUT.html)）と対話するテストです。 *public* インタフェースを通してオブジェクトをテストし、それが正しく振る舞っているかを確認するための状態検証を行います。
+
+[round trip test](http://xunitpatterns.com/round%20trip%20test.html)が期待する振る舞いを正確に記述するのに十分でない場合、[layer-crossing test](http://xunitpatterns.com/layer-crossing%20test.html)などのテスト方法を活用できます。
+
+### 筆者補足：privateインタフェースをテストするか
+実際、 *public* インタフェースを用いることを優先することは設計の指標としても有用だと考えます。 *public* インタフェースは外から使用することを期待するため、 *private* メソッドとの比較すると、変更の頻度が少ない安定したインタフェースと考えられます。逆を返すと、 *private* インタフェースは不安定なインタフェースとなるため、テストのメンテナンス頻度が高いテストを生み出すことになります。壊れやすいテストのひとつ *Overcoupled Software* を生み出さないためには、「なるべく」 *private* インタフェースをテストする必要がない設計を考えるのがよいでしょう。
+
+## Communicate Intent （意図を伝える）
+*Higher-Level Language, Single-Glance Readable* とも知られる原則です。自動化されたテストはプログラムであるため、対象をテストするために、必要な詳細ロジックをすべて実装することが重要です。
+しかし、テストをメンテナンスする開発者が、 **理解しやすくメンテナンスしやすい** テストにすることも重要です。
+
+大量のコードが含まれていたり、[Conditional Test Logic](http://xunitpatterns.com/Conditional%20Test%20Logic.html)は、*曖昧なテスト*([Obscure Tests](http://xunitpatterns.com/Obscure%20Test.html))と呼ばれ、理解するのが難しいものになります。
+
+[Test Utility Methods](http://xunitpatterns.com/Test%20Utility%20Method.html)のライブラリを使用すると、詳細をすべてコーディングする必要がないため、テストの作成コストが下がります。また、Test Utility Methodにまとめることでテストケースの意図が伝わりやすいものになります。
 
 ## Don't Modify the SUT
 
@@ -52,3 +88,20 @@ Chapter5 Principles of Test Automation
 ## Verify One Condition per Test
 
 ## Test Concerns Separately
+
+# Refs
+## 参考書籍
+- [xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)
+- [オブジェクト指向設計実践ガイド ～Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方](https://gihyo.jp/book/2016/978-4-7741-8361-9)
+- [レガシーコード改善ガイド](https://www.shoeisha.co.jp/book/detail/9784798116839)
+- [Working Effectively with Legacy Code](https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052)
+
+## 参考記事
+- http://xunitpatterns.com/
+- [テストが辛いを解決するテスト駆動開発のアプローチ at PHPカンファレンス仙台2019](https://speakerdeck.com/hgsgtk/tesutokaxin-iwojie-jue-surutesutoqu-dong-kai-fa-falseahuroti-at-phpkanhuarensuxian-tai-2019)
+- [xUnit Patterns: Round trip test](http://xunitpatterns.com/round%20trip%20test.html)
+- [xUnit Patterns: layer-crossing test](http://xunitpatterns.com/layer-crossing%20test.html)
+- [xUnit Patterns: SUT](http://xunitpatterns.com/SUT.html)
+- [xUnit Patterns: Conditional Test Logic](http://xunitpatterns.com/Conditional%20Test%20Logic.html)
+- [xUnit Patterns: Obscure Tests](http://xunitpatterns.com/Obscure%20Test.html)
+- [xUnit Patterns: Test Utility Methods](http://xunitpatterns.com/Test%20Utility%20Method.html)
