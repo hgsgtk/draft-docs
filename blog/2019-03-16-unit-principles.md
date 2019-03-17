@@ -116,9 +116,26 @@ Shared Fixture
 
 ## Verify One Condition per Test（テストごとにひとつの条件を検証する）
 
-## Test Concerns Separately（）
 
-## Ensure Commensurate Effort and Responsibility（）
+## Test Concerns Separately（懸念は別々にテストする）
+複雑なアプリケーションの動作は多数の小さい動作の集合から構成されますが、動作の一部は同じコンポーネントによって提供されることがあります。これに対して、単一のテストメソッドで複数の懸念事項をテストすることは、いずれかの懸念事項の変更時に破綻してしまうことが問題点としてあります。さらにつらい状況は懸念事項が問題になっているか明らかにならないことです。
+
+その場合、テストケースの失敗に対するトラブルシューティングと修正が難しくなります。
+
+複数ある懸念をそれぞれ1つのテストケースとしてテストすることで、特定の部分に問題があることをテストの失敗が明確に教えてくれます。
+
+## Ensure Commensurate Effort and Responsibility（調和の取れた努力と責任の確保）
+テストを書いたり修正するのにかかる努力の量は、対応する機能を実装するのに要する努力を超えるべきではありません。
+
+### 補足：テスト初級者
+テストの作成・修正に関する努力の量に関して、特にテストを書き始めたテスト初級者にとっては、とくに多く感じることになります。この原則に照らし合わせるのであれば、即座に「テストを書かない」という方向に対して議論したくなるかもしれません。
+
+しかし、その場合これまでの自動テストに関する原則を満たしていないテストを書いている可能性があります。その時点で感じる努力量を減らすための解決策は、これまでの原則を踏まえた上で、「テストをうまくなる」ことです。
+
+書籍『[オブジェクト指向設計実践ガイド ～Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方](https://gihyo.jp/book/2016/978-4-7741-8361-9)』では、次の言葉で説明されています。
+
+「*テストにコストがかかることの解決方法は、テストをやめることではありません。うまくなることです。*」
+
 
 # Refs
 ## 参考書籍
@@ -144,4 +161,5 @@ Shared Fixture
   - [Dependency Lookup](http://xunitpatterns.com/Dependency%20Lookup.html)
   - [Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)
   - [Test Hooks](http://xunitpatterns.com/Test%20Hook.html)
+  - [Data-Driven Test](http://xunitpatterns.com/Data-Driven%20Test.html)
 - [テストが辛いを解決するテスト駆動開発のアプローチ at PHPカンファレンス仙台2019](https://speakerdeck.com/hgsgtk/tesutokaxin-iwojie-jue-surutesutoqu-dong-kai-fa-falseahuroti-at-phpkanhuarensuxian-tai-2019)
