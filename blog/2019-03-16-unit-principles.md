@@ -77,7 +77,7 @@ http://xunitpatterns.com/
 
 ## Don't Modify the SUT（SUTを修正しない）
 
-Test Hooks
+[Test Hooks](http://xunitpatterns.com/Test%20Hook.html)
 Test Double
 
 ## Keep Tests Independent（テストを独立させる）
@@ -94,12 +94,27 @@ Shared Fixture
 これを避けるために、テストを完全に制御しながら依存関係の可能性のあるすべての反応をソフトウェアに注入できる必要があります。具体的には、依存関係のあるソフトウェアを[Dependency Injection](http://xunitpatterns.com/Dependency%20Injection.html)や[Dependency Lookup](http://xunitpatterns.com/Dependency%20Lookup.html)、[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)を用いた上書きによって、[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換える方法によって制御できます。
 
 ## Minimize Test Overlap（テストの重複を最小限に抑える）
+**機能に対して可能な限りテストを少なくするようにテストを構成する** 必要があります。頻繁にテストすることでテストカバレッジを改善したいかもしれませんが、同じ機能を検証するテストは通常同時に失敗します。
+
+そのため、SUTの機能変更に対して、複数ヵ所に同じメンテナンスをする必要が出てきます。このように複数のテストで同じ機能を検証することは、テストのメンテナンスコストを上げる可能性があり、品質をあまり向上させない可能性があります。
 
 ## Minimize Untestable Code（テスト不可能なコードを最小限に抑える）
+完全自動化テストでのテストが難しいものがあります。例えば、GUIコンポーネントやマルチスレッドのコードや、テストメソッド自体があります。
+テスト不可能なコードは自動化テストでの保護が難しく、安全なリファクタリング・機能追加が困難なものです。
+
+保守が必要なテスト不可能なコードの量を最小限に抑えることが望ましいです。そのためには、テストしたいロジックを、テスト不可能なクラスの外に移動するリファクタリングを行うことです。
+
+*Minimize Untestable Code* によって、テストカバレッジが改善され、結果コードに対する自信とリファクタリングする能力が向上します。
 
 ## Keep Test Logic Out of Production Code（テストロジックをプロダクションコードから除外する）
+テスト容易性が確保されていないプロダクションコードの場合、テストをしやすくするための *hook* をプロダクションコードに入れたい誘惑があります。
 
-## Verify One Condition per Test（テストごとに一つの条件を検証する）
+ここで、if文のコードを挿入。
+
+しかし、テストはシステムの動作を検証することです。テスト中のシステムの動作が異なる場合、テストで本番動作を確認する目的は達成できません。
+プロダクションコードには、 `if testing then` といった条件付きステートメントを含めるべきではありません。
+
+## Verify One Condition per Test（テストごとにひとつの条件を検証する）
 
 ## Test Concerns Separately（）
 
@@ -128,4 +143,5 @@ Shared Fixture
   - [Dependency Injection](http://xunitpatterns.com/Dependency%20Injection.html)
   - [Dependency Lookup](http://xunitpatterns.com/Dependency%20Lookup.html)
   - [Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)
+  - [Test Hooks](http://xunitpatterns.com/Test%20Hook.html)
 - [テストが辛いを解決するテスト駆動開発のアプローチ at PHPカンファレンス仙台2019](https://speakerdeck.com/hgsgtk/tesutokaxin-iwojie-jue-surutesutoqu-dong-kai-fa-falseahuroti-at-phpkanhuarensuxian-tai-2019)
