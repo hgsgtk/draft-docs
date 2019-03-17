@@ -30,7 +30,12 @@ http://xunitpatterns.com/
 11. Verify One Condition per Test
 12. Test Concerns Separately
 
-今回は、1〜4の内容を見ていきます。
+## 用語定義：SUT
+[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)では、 **SUT** という言葉が頻繁に登場します。前提としてこの言葉を抑えます。
+
+[SUT](http://xunitpatterns.com/SUT.html)は、 **system under test** の略語です。これは、「テストしている対象」を示すものです。今回はユニットテストですので、テストスクリプトが実行する「テスト対象のクラスやメソッド」のことを指します。
+
+SUTという言葉を抑えたところでさっそく12個の原則を見ていきましょう。
 
 ## Write the Tests First （テストを最初に書く）
 *Test-Driven Development(TDD)* あるいは *Test-First Development* として知られる原則です。TDDを支持する理由として主に２つあります。
@@ -60,7 +65,7 @@ http://xunitpatterns.com/
 フィクスチャを設定したり、予想される結果やテストを検証するために *バックドア操作* を使用すると、テストのメンテナンスを頻繁に行う必要がある状態になります。それは、壊れやすいテスト（*Fragile Test*）」のひとつ *Overcoupled Software* と呼ばれています。
 また、振る舞い検証およびモックオブジェクトの過剰使用は、これまた壊れやすいテスト（*Fragile Test*）のひとつ *Overspecified Software* と呼ばれる状況になります。それによって、テストがより脆弱になり、開発者のリファクタリングを妨げる可能性があります。
 
-すべての選択肢が等しく有効であれば、[round trip test](http://xunitpatterns.com/round%20trip%20test.html) を用いるべきです。[round trip test](http://xunitpatterns.com/round%20trip%20test.html) とは、 *front door(public interface)* のみを介してテスト対象システム（[SUT](http://xunitpatterns.com/SUT.html)）と対話するテストです。 *public* インタフェースを通してオブジェクトをテストし、それが正しく振る舞っているかを確認するための状態検証を行います。
+すべての選択肢が等しく有効であれば、[round trip test](http://xunitpatterns.com/round%20trip%20test.html) を用いるべきです。[round trip test](http://xunitpatterns.com/round%20trip%20test.html) とは、 *front door(public interface)* のみを介して[SUT](http://xunitpatterns.com/SUT.html)と対話するテストです。 *public* インタフェースを通してオブジェクトをテストし、それが正しく振る舞っているかを確認するための状態検証を行います。
 
 [round trip test](http://xunitpatterns.com/round%20trip%20test.html)が期待する振る舞いを正確に記述するのに十分でない場合、[layer-crossing test](http://xunitpatterns.com/layer-crossing%20test.html)などのテスト方法を活用できます。
 
@@ -77,13 +82,13 @@ http://xunitpatterns.com/
 
 [Test Utility Methods](http://xunitpatterns.com/Test%20Utility%20Method.html)のライブラリを使用すると、詳細をすべてコーディングする必要がないため、テストの作成コストが下がります。また、Test Utility Methodにまとめることでテストケースの意図が伝わりやすいものになります。
 
-## Don't Modify the SUT（テスト対象システムを修正しない）
-効果的なテストでは、アプリケーションの一部を[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えるか、[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)を使用して動作の一部をオーバーライドすることが求められます。テスト対象システムが依存するコンポーネントから返される値など（[indirect input](http://xunitpatterns.com/indirect%20input.html)）を制御したり、SUTから別コンポーネントのメソッド呼び出しなど（[indirect output](http://xunitpatterns.com/indirect%20output.html)）を傍受して動作検証を行う必要があるためです。また、テスト環境では許容できない副作用や依存関係があるといった理由になります。
+## Don't Modify the SUT（SUTを修正しない）
+効果的なテストでは、アプリケーションの一部を[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えるか、[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)を使用して動作の一部をオーバーライドすることが求められます。SUTが依存するコンポーネントから返される値など（[indirect input](http://xunitpatterns.com/indirect%20input.html)）を制御したり、SUTから別コンポーネントのメソッド呼び出しなど（[indirect output](http://xunitpatterns.com/indirect%20output.html)）を傍受して動作検証を行う必要があるためです。また、テスト環境では許容できない副作用や依存関係があるといった理由になります。
 
-テスト対象システムを変更することは、[Test Hooks](http://xunitpatterns.com/Test%20Hook.html)や[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)での振る舞いのオーバーライド、依存オブジェクトを[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えていたとしても、危険なことです。
+SUTを変更することは、[Test Hooks](http://xunitpatterns.com/Test%20Hook.html)や[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)での振る舞いのオーバーライド、依存オブジェクトを[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えていたとしても、危険なことです。
 
 私たちは、ソフトウェアが本番環境で使用されるような構成をもって、ソフトウェアをテストしていることを確認する必要があります。
-テスト対象システムを取り巻くコンテキストをより制御するために、Test Double など何かに置き換える必要がある場合、本番の動きに代表されるものであることを確認しておく必要があります。
+SUTを取り巻くコンテキストをより制御するために、Test Double など何かに置き換える必要がある場合、本番の動きに代表されるものであることを確認しておく必要があります。
 
 ## Keep Tests Independent（テストを独立させる）
 テストが相互依存していて、さらに順序に依存している場合は、テストの失敗から得られる有用なフィードバックが得にくくなります。相互依存しているようなテストが複数同時に失敗した場合、何が問題なのかわかりにくい状況に陥ってしまいます。
