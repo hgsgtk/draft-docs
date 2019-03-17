@@ -1,5 +1,5 @@
 # TL;DR
-- 自動ユニットテストの原則を『xUnit Test Patterns: Refactoring Test Code』からおさえる
+- 自動ユニットテストの12個の原則を『[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)』からおさえる
 - 関連書籍や実践の感覚値を随時補足していく
 
 # xUnit Test Patterns
@@ -80,17 +80,19 @@ http://xunitpatterns.com/
 ## Don't Modify the SUT（テスト対象システムを修正しない）
 効果的なテストでは、アプリケーションの一部を[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えるか、[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)を使用して動作の一部をオーバーライドすることが求められます。テスト対象システムが依存するコンポーネントから返される値など（[indirect input](http://xunitpatterns.com/indirect%20input.html)）を制御したり、SUTから別コンポーネントのメソッド呼び出しなど（[indirect output](http://xunitpatterns.com/indirect%20output.html)）を傍受して動作検証を行う必要があるためです。また、テスト環境では許容できない副作用や依存関係があるといった理由になります。
 
-テスト対象システムを変更することは、[Test Hooks](http://xunitpatterns.com/Test%20Hook.html)や[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)でのふるまいのオーバーライド、依存オブジェクトを[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えていたとしても、危険なことです。
+テスト対象システムを変更することは、[Test Hooks](http://xunitpatterns.com/Test%20Hook.html)や[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)での振る舞いのオーバーライド、依存オブジェクトを[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えていたとしても、危険なことです。
 
 私たちは、ソフトウェアが本番環境で使用されるような構成をもって、ソフトウェアをテストしていることを確認する必要があります。
 テスト対象システムを取り巻くコンテキストをより制御するために、Test Double など何かに置き換える必要がある場合、本番の動きに代表されるものであることを確認しておく必要があります。
 
 ## Keep Tests Independent（テストを独立させる）
-手動テストでは
-自動テストでは
+テストが相互依存していて、さらに順序に依存している場合は、テストの失敗から得られる有用なフィードバックが得にくくなります。相互依存しているようなテストが複数同時に失敗した場合、何が問題なのかわかりにくい状況に陥ってしまいます。
 
-Fresh Fixture
-Shared Fixture
+独立したテスト（*Independent Test*）は、単独で実行できます。テスト対象を検証できる状態にするためには、テストケースごとに用意されたフィクスチャ（[Fresh Fixture](http://xunitpatterns.com/Fresh%20Fixture.html)）を設定します。
+
+[Fresh Fixture](http://xunitpatterns.com/Fresh%20Fixture.html)は、複数テストで共有されるフィクスチャ[Shared Fixture](http://xunitpatterns.com/Shared%20Fixture.html)と比較するとはるかに相互に独立しているテストになる可能性が高いです。
+
+独立したテストを書くことで、ユニットテストの失敗から原因を突き止めやすい状況を生み出すことができます。
 
 ## Isolate the SUT（SUTを隔離する）
 もし、テスト対象のSUTが他のソフトウェアに依存している場合、他のソフトウェアの動作の変更によってテストが突然失敗することがあります。たとえば、SUTが外部システムに依存しているようなケースです。
@@ -104,7 +106,7 @@ Shared Fixture
 そのため、SUTの機能変更に対して、複数ヵ所に同じメンテナンスをする必要が出てきます。このように複数のテストで同じ機能を検証することは、テストのメンテナンスコストを上げる可能性があり、品質をあまり向上させない可能性があります。
 
 ## Minimize Untestable Code（テスト不可能なコードを最小限に抑える）
-完全自動化テストでのテストが難しいものがあります。例えば、GUIコンポーネントやマルチスレッドのコードや、テストメソッド自体があります。
+完全自動化テストでのテストの難しいケースがあります。たとえば、GUIコンポーネントやマルチスレッドのコードや、テストメソッド自体があります。
 テスト不可能なコードは自動化テストでの保護が難しく、安全なリファクタリング・機能追加が困難なものです。
 
 保守が必要なテスト不可能なコードの量を最小限に抑えることが望ましいです。そのためには、テストしたいロジックを、テスト不可能なクラスの外に移動するリファクタリングを行うことです。
@@ -114,13 +116,35 @@ Shared Fixture
 ## Keep Test Logic Out of Production Code（テストロジックをプロダクションコードから除外する）
 テスト容易性が確保されていないプロダクションコードの場合、テストをしやすくするための *hook* をプロダクションコードに入れたい誘惑があります。
 
-ここで、if文のコードを挿入。
+```php
+<?php
+declare(strict_types=1);
+
+final class TestHook
+{
+    public $mode;
+
+    public function exec()
+    {
+        if ($this->mode === 'test') {
+            // exec to logic for testing
+        } else {
+            // exec to logic for production
+        }
+    }
+}
+```
 
 しかし、テストはシステムの動作を検証することです。テスト中のシステムの動作が異なる場合、テストで本番動作を確認する目的は達成できません。
 プロダクションコードには、 `if testing then` といった条件付きステートメントを含めるべきではありません。
 
 ## Verify One Condition per Test（テストごとにひとつの条件を検証する）
-なげぇ
+自動テストでは、テストスクリプトを記述することになりますが、それらは単一のテスト条件を検証する必要があります。なぜなら、自動テストでは、アサーションが一回失敗するだけでテストの実行が停止し、残りのテストでは何がうまくいって何がうまくいかないのかというデータがテストから得られないためです。
+
+### 1つのテストケースに1つのアサーション？
+ただし、 *Verify One Condition per Test* の「One Condition」をどう意味づけるかによって意見が異なることがあります。それは、「ひとつのテストケースに対してひとつのアサーションのみ」という主張です。
+
+たしかに、「テストごとに1つのアサーション」とすることで、テストメソッドの命名が簡単になる利点があります。しかし一方、多くのアサーションが必要な場合、多くのテストケースが必要になります。複数のアサーションメソッドの呼び出しを1つに呼び出しに減らすような[Custom Assertion](http://xunitpatterns.com/Custom%20Assertion.html)を利用することでこのアプローチは、テストを読みやすくなる可能性がありますが、そうではない場合、「1つのテストケースに1つのアサーション」という主張は強制されるものではありません。
 
 ## Test Concerns Separately（懸念は別々にテストする）
 複雑なアプリケーションの動作は多数の小さい動作の集合から構成されますが、動作の一部は同じコンポーネントによって提供されることがあります。これに対して、単一のテストメソッドで複数の懸念事項をテストすることは、いずれかの懸念事項の変更時に破綻してしまうことが問題点としてあります。さらにつらい状況は懸念事項が問題になっているか明らかにならないことです。
@@ -141,6 +165,8 @@ Shared Fixture
 
 「*テストにコストがかかることの解決方法は、テストをやめることではありません。うまくなることです。*」
 
+# まとめ
+[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)から自動ユニットテストにおける12個の原則を見ていきました。普段ユニットテストを作成している中で、方法論に迷った場合は一度原則に立ち返ってみてはいかがでしょうか。
 
 # Refs
 ## 参考書籍
@@ -169,4 +195,7 @@ Shared Fixture
   - [Data-Driven Test](http://xunitpatterns.com/Data-Driven%20Test.html)
   - [indirect input](http://xunitpatterns.com/indirect%20input.html)
   - [indirect output](http://xunitpatterns.com/indirect%20output.html)
+  - [Fresh Fixture](http://xunitpatterns.com/Fresh%20Fixture.html)
+  - [Shared Fixture](http://xunitpatterns.com/Shared%20Fixture.html)
+  - [Custom Assertion](http://xunitpatterns.com/Custom%20Assertion.html)
 - [テストが辛いを解決するテスト駆動開発のアプローチ at PHPカンファレンス仙台2019](https://speakerdeck.com/hgsgtk/tesutokaxin-iwojie-jue-surutesutoqu-dong-kai-fa-falseahuroti-at-phpkanhuarensuxian-tai-2019)
