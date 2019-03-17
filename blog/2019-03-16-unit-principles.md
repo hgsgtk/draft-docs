@@ -73,12 +73,17 @@ http://xunitpatterns.com/
 
 大量のコードが含まれていたり、[Conditional Test Logic](http://xunitpatterns.com/Conditional%20Test%20Logic.html)は、*曖昧なテスト*([Obscure Tests](http://xunitpatterns.com/Obscure%20Test.html))と呼ばれ、理解するのが難しいものになります。
 
+テストを維持したり、ドキュメントとしてテストを利用するたびにテストを再考する必要が出てくるため、余分に時間がかかってしまいます。
+
 [Test Utility Methods](http://xunitpatterns.com/Test%20Utility%20Method.html)のライブラリを使用すると、詳細をすべてコーディングする必要がないため、テストの作成コストが下がります。また、Test Utility Methodにまとめることでテストケースの意図が伝わりやすいものになります。
 
-## Don't Modify the SUT（SUTを修正しない）
+## Don't Modify the SUT（テスト対象システムを修正しない）
+効果的なテストでは、アプリケーションの一部を[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えるか、[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)を使用して動作の一部をオーバーライドすることが求められます。テスト対象システムが依存するコンポーネントから返される値など（[indirect input](http://xunitpatterns.com/indirect%20input.html)）を制御したり、SUTから別コンポーネントのメソッド呼び出しなど（[indirect output](http://xunitpatterns.com/indirect%20output.html)）を傍受して動作検証を行う必要があるためです。また、テスト環境では許容できない副作用や依存関係があるといった理由になります。
 
-[Test Hooks](http://xunitpatterns.com/Test%20Hook.html)
-Test Double
+テスト対象システムを変更することは、[Test Hooks](http://xunitpatterns.com/Test%20Hook.html)や[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)でのふるまいのオーバーライド、依存オブジェクトを[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換えていたとしても、危険なことです。
+
+私たちは、ソフトウェアが本番環境で使用されるような構成をもって、ソフトウェアをテストしていることを確認する必要があります。
+テスト対象システムを取り巻くコンテキストをより制御するために、Test Double など何かに置き換える必要がある場合、本番の動きに代表されるものであることを確認しておく必要があります。
 
 ## Keep Tests Independent（テストを独立させる）
 手動テストでは
@@ -91,7 +96,7 @@ Shared Fixture
 もし、テスト対象のSUTが他のソフトウェアに依存している場合、他のソフトウェアの動作の変更によってテストが突然失敗することがあります。たとえば、SUTが外部システムに依存しているようなケースです。
 これは、 *Context Sensitivity* と呼ばれる壊れやすいテストのひとつです。
 
-これを避けるために、テストを完全に制御しながら依存関係の可能性のあるすべての反応をソフトウェアに注入できる必要があります。具体的には、依存関係のあるソフトウェアを[Dependency Injection](http://xunitpatterns.com/Dependency%20Injection.html)や[Dependency Lookup](http://xunitpatterns.com/Dependency%20Lookup.html)、[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)を用いた上書きによって、[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換える方法によって制御できます。
+これを避けるために、テストを完全に制御しながら依存関係の可能性のあるすべての反応をソフトウェアに注入できる必要があります。具体的には、依存関係のあるソフトウェアを[Dependency Injection](http://xunitpatterns.com/Dependency%20Injection.html)や[Dependency Lookup](http://xunitpatterns.com/Dependency%20Lookup.html)、[Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)を用いた一部の動作のオーバーライドによって、[Test Double](http://xunitpatterns.com/Test%20Double.html)に置き換える方法によって制御できます。
 
 ## Minimize Test Overlap（テストの重複を最小限に抑える）
 **機能に対して可能な限りテストを少なくするようにテストを構成する** 必要があります。頻繁にテストすることでテストカバレッジを改善したいかもしれませんが、同じ機能を検証するテストは通常同時に失敗します。
@@ -115,7 +120,7 @@ Shared Fixture
 プロダクションコードには、 `if testing then` といった条件付きステートメントを含めるべきではありません。
 
 ## Verify One Condition per Test（テストごとにひとつの条件を検証する）
-
+なげぇ
 
 ## Test Concerns Separately（懸念は別々にテストする）
 複雑なアプリケーションの動作は多数の小さい動作の集合から構成されますが、動作の一部は同じコンポーネントによって提供されることがあります。これに対して、単一のテストメソッドで複数の懸念事項をテストすることは、いずれかの懸念事項の変更時に破綻してしまうことが問題点としてあります。さらにつらい状況は懸念事項が問題になっているか明らかにならないことです。
@@ -162,4 +167,6 @@ Shared Fixture
   - [Test-specified Subclass](http://xunitpatterns.com/Test-Specific%20Subclass.html)
   - [Test Hooks](http://xunitpatterns.com/Test%20Hook.html)
   - [Data-Driven Test](http://xunitpatterns.com/Data-Driven%20Test.html)
+  - [indirect input](http://xunitpatterns.com/indirect%20input.html)
+  - [indirect output](http://xunitpatterns.com/indirect%20output.html)
 - [テストが辛いを解決するテスト駆動開発のアプローチ at PHPカンファレンス仙台2019](https://speakerdeck.com/hgsgtk/tesutokaxin-iwojie-jue-surutesutoqu-dong-kai-fa-falseahuroti-at-phpkanhuarensuxian-tai-2019)
