@@ -64,14 +64,41 @@ SUTという言葉を抑えたところでさっそくテスト自動化のゴ�
 また、「顧客テストは失敗しているがユニットテストは成功している」という状況を、[Missing Unit Test](http://xunitpatterns.com/Production%20Bugs.html#Missing%20Unit%20Test)と呼びます。*Defect Localization* はすばらしい利点です。しかし、考えうるすべてのシナリオに対してユニットテストを書かないと達成できません。
 
 ## Tests should help us understand the SUT.（SUTの理解促進）
-テストは、テストの読み手に対して **「コードがどのように機能するか」** を示せます。
+テストは、テストの読み手に対して **「SUTがどのように機能するか」** を示せます。
+この特性は、 **Tests as Documentation**（"ドキュメント"としてのテスト）と呼ばれます。自動化テストがある場合、テストを *"ドキュメント"* として簡単に使用できます。
+また、「**SUTが何をしているのか**」を知りたければ、Debugger（ex. [xdebug](https://xdebug.org/)）を起動してテストを実行し、シングルステップでコードがどのように動いているか見ることで、それを知ることができます。
 
-### Tests as Documentation（"ドキュメント"としてのテスト）
+## Tests should reduce (and not introduce) risk.（リスクを減らす）
+### Tests as Safety Net（セーフティネット）
+回帰テストが存在しない、いわゆる **レガシーコード** と立ち向かうのは憂鬱ですよね。コードの変更によって、「何か壊していないか」を知ることができないのはリスクです。結果的に、開発速度は遅く慎重なものになり、変更時の手動での大量の検査をするといったことになります。
 
+一方、回帰テストが存在する場合、非常にすばやくそれらを実行できます。「何か壊していないか」は **テストの失敗によって** 知ることができます。
+しかし、すでに紹介した [Missing Unit Test](http://xunitpatterns.com/Production%20Bugs.html#Missing%20Unit%20Test) があれば、セーフティネットに穴が空いている状態です。
 
-## Tests should reduce (and not introduce) risk.
+### Do No Harm（害をもたらさない）
+テストによってSUTに新たなリスクを生み出さないように注意しなければなりません。
+まず守るべきものとして、**Keep Test Logic Out of Producton Code** 原則があります。これは、 **テストロジックをプロダクションコードから除外する** という内容で、たとえばプロダクションコード内に `if ($mode === 'test') {}`といったテストをするための *hook* を入れるのは避けるべきだというものです。
 
-## Tests should be easy to run.
+他のリスクは、「信頼していたコードが実は動かない」というケースです。よくある間違いは、 [Test Double](http://xunitpatterns.com/Test%20Double.html)を過剰に使用してしまうことです。このことは、もうひとつの重要な原則 **Don't Modify the SUT** をもたらしています。
+
+ここで登場した２つの原則については、次のURLにてまとめましたので合わせてご参照ください。
+
+[xUnit Test Patternsから学ぶ12個のユニットテストの原則 on Qiita](https://qiita.com/hgsgtk/items/a3186a250d36d3b224d9)
+
+## Tests should be easy to run.（実行が簡単）
+テストの実行を容易にするために、次の4つのゴールがあります。
+
+- Fully Automated Tests
+- Self-Checking Tests
+- Repeatable Tests
+- Independent Test
+
+これらの多くは、[JUnit](https://junit.org/junit5/)や[PHPUnit](https://phpunit.de/)といったテスティングフレームワークを使用していると、自然に達成しているゴールです。しかし、テスティングフレームワークの *思想* のひとつを知っておくことはそれの利用者としても有益です。
+
+### Fully Automated Tests
+### Self-Checking Tests
+### Repeatable Tests
+### Independent Test
 
 ## Tests should be easy to write and maintain.
 
@@ -91,6 +118,8 @@ SUTという言葉を抑えたところでさっそくテスト自動化のゴ�
 ## Articles
 - [Xunit Test Patterns](http://xunitpatterns.com/)
   - [Fragile Test](http://xunitpatterns.com/Fragile%20Test.html)
+  - [Missing Unit Test](http://xunitpatterns.com/Production%20Bugs.html#Missing%20Unit%20Test)
+  - [Test Double](http://xunitpatterns.com/Test%20Double.html)
 - [社内LT20170810(xUnit Test Patterns Chapter3について)](https://speakerdeck.com/o0h/she-nei-lt20170810) by [@o0h_](https://twitter.com/o0h_)
 - [xUnit Test Patternsから学ぶ12個のユニットテストの原則 on Qiita](https://qiita.com/hgsgtk/items/a3186a250d36d3b224d9) by [@hgsgtk](https://twitter.com/hgsgtk)
 - [xUnit Test Patternsから学ぶテストアンチパターン on Speaker Deck](https://speakerdeck.com/hgsgtk/testing-anti-pattern-learned-in-xunit-test-pattern) by [@hgsgtk](https://twitter.com/hgsgtk)
