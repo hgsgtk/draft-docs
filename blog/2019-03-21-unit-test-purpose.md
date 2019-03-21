@@ -86,27 +86,51 @@ SUTという言葉を抑えたところでさっそくテスト自動化のゴ�
 [xUnit Test Patternsから学ぶ12個のユニットテストの原則 on Qiita](https://qiita.com/hgsgtk/items/a3186a250d36d3b224d9)
 
 ## Tests should be easy to run.（実行が簡単）
-テストの実行を容易にするために、次の4つのゴールがあります。
+「ワンクリックで簡単に実行できる」ことについてです。テストの実行を容易とするために、次の4つのゴールがあります。
 
 - Fully Automated Tests
 - Self-Checking Tests
 - Repeatable Tests
-- Independent Test
+- *Independent Test（独立したテスト）*
 
-これらの多くは、[JUnit](https://junit.org/junit5/)や[PHPUnit](https://phpunit.de/)といったテスティングフレームワークを使用していると、自然に達成しているゴールです。しかし、テスティングフレームワークの *思想* のひとつを知っておくことはそれの利用者としても有益です。
+これらの多くは、[JUnit](https://junit.org/junit5/)や[PHPUnit](https://phpunit.de/)といったテスティングフレームワークを使用していると、自然に達成しているゴールです。しかし、意識しないとその利点を意図せず壊してしまう可能性がある部分もあるので、おさえていきましょう。
 
-### Fully Automated Tests
-### Self-Checking Tests
-### Repeatable Tests
-### Independent Test
+*Fully Automated Tests* は、「テストは **手動介入** なしで実行できなければいけない」ということです。そして、 *Self-Checking Tests* は、「テスト自身がテストの失敗を報告する」という特性を表しています。
+実際、テスティングフレームワークを使用している場合、用意されているコマンドを実行して、出力された結果を確認します。普段のテスト体験について思い出すとこの２つは想像しやすいですね。
 
-## Tests should be easy to write and maintain.
+### Repeatable Test（繰り返し実行可能）
+*Repeatable* なテストでは、何度実行しても同じ結果が得られます。実行のたびに結果が変わりうるテストは、[Erratic Test](http://xunitpatterns.com/Erratic%20Test.html)（不安定なテスト）のひとつです。
+インメモリなデータや、ローカル変数・フィールドのみを使用するテストなどが、*Repeatable* なテストの書き方としてあげられます。
 
-## Tests should require minimam maintenance as the system evolves around them.
+## Tests should be easy to write and maintain.（書きやすく、メンテナンスしやすい）
+プロダクションコードのコーディングは、頭の中の多数の情報を保持する必要がある難しい作業です。しかし、テストの場合は **「テストを書くこと」** ではなく **「テストすること」** に対して重点を置くべきです。そのため、テストコードは読み書きする上で **シンプル** でなければなりません。
+
+### Simple Test（シンプルなテスト）
+テストは **小さく** 、 **１回につきひとつのこと** をテストするべきです。複数機能を検証しているような場合は、それぞれ別々のテストメソッドに分割するなど、 **Verify One Confition per Test**（テストごとにひとつの条件を検証する）という原則を満たすテストコードにしていくべきです。
+
+### Expressive Tests（表現力豊かなテスト）
+[Test Utility Methods](http://xunitpatterns.com/Test%20Utility%20Method.html)を活用することで、「何をテストしたいのか」が伝わりやすくなります。
+
+これの活用時のひとつは、DRY（Don't Repeat Yourself）原則がテストコードに対しても適用しうるときです。
+
+しかし忘れてはいけないことは、テストコードは読み手に **意図を伝える** 必要があるという点です。それぞれのテストメソッドにて意図を伝えるためにコアとなるテストロジックは、それぞれの中にとどめておくのがいいでしょう。
+
+### Separation of Concerns（関心の分離）
+この文脈での「*Separation of Concerns*」は２つの側面があります。
+
+1. **テストコードはプロダクションコードから分離する**
+2. **それぞれのテストはひとつの関心に集中する**
+
+このゴールが達成できていない例として、UIとビジネスロジックを同じ場所でテストすることが挙げられます。なぜなら、ひとつのテストで複数のことに対して関心を持ってしまうからです。これをやってしまうと、もしどれかひとつが失敗した場合にすべてが失敗することになります。
+
+このように、「ひとつの関心に集中する」テストを書くには、ロジックをいくつか異なるコンポーネントに分割する必要が出てきます。結果として **Design for Testability（テスト容易な設計）** につながっていきます。
+
+## Tests should require minimam maintenance as the system evolves around them.（システム変更に対して最小限のメンテナンス）
+
 
 # Next
 『[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)』では、 **自動ユニットテストの原則** ・ **自動ユニットテストにおけるアンチパターン** についても言及されています。
-こちらについても次のURLで手前味噌ながらまとめましたので、合わせてご参照ください。
+こちらについても次のURLにてまとめましたので、合わせてご参照ください。
 
 - [xUnit Test Patternsから学ぶ12個のユニットテストの原則 on Qiita](https://qiita.com/hgsgtk/items/a3186a250d36d3b224d9)
 - [xUnit Test Patternsから学ぶテストアンチパターン on Speaker Deck](https://speakerdeck.com/hgsgtk/testing-anti-pattern-learned-in-xunit-test-pattern)
@@ -120,6 +144,7 @@ SUTという言葉を抑えたところでさっそくテスト自動化のゴ�
   - [Fragile Test](http://xunitpatterns.com/Fragile%20Test.html)
   - [Missing Unit Test](http://xunitpatterns.com/Production%20Bugs.html#Missing%20Unit%20Test)
   - [Test Double](http://xunitpatterns.com/Test%20Double.html)
+  - [Erratic Test](http://xunitpatterns.com/Erratic%20Test.html)
 - [社内LT20170810(xUnit Test Patterns Chapter3について)](https://speakerdeck.com/o0h/she-nei-lt20170810) by [@o0h_](https://twitter.com/o0h_)
 - [xUnit Test Patternsから学ぶ12個のユニットテストの原則 on Qiita](https://qiita.com/hgsgtk/items/a3186a250d36d3b224d9) by [@hgsgtk](https://twitter.com/hgsgtk)
 - [xUnit Test Patternsから学ぶテストアンチパターン on Speaker Deck](https://speakerdeck.com/hgsgtk/testing-anti-pattern-learned-in-xunit-test-pattern) by [@hgsgtk](https://twitter.com/hgsgtk)
