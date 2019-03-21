@@ -27,6 +27,8 @@
 
 画像： img/Economics-of-Test-Automation-anti.png。
 
+後者の状況にならないためにも、本書で語られているような **ユニットテストの目指すべきところ** を抑えた上で、プロジェクト全体のコストを削減する「自動ユニットテスト環境」を目指していきましょう。
+
 # テスト自動化のゴール
 ここで、本エントリのタイトルにもある「ユニットテストの目的」と大きく関係する「テスト自動化のゴール」についてです。『xUnit Test Patterns: Refactoring Test Code』では、6つの目的をあげています。
 
@@ -39,9 +41,33 @@
 
 最初の3つの目的は、 **テストがもたらす価値** について示しています。一方、以降の3つは **テスト自身の特徴** について注目したものです。
 
-## Tests should help us improve quality.
+## 用語定義：SUT
+[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)では、 **SUT** という言葉が頻繁に登場します。前提としてこの言葉を抑えます。
 
-## Tests should help us understand the SUT.
+[SUT](http://xunitpatterns.com/SUT.html)は、 **system under test** の略語です。これは、「テストしている対象」を示すものです。今回はユニットテストですので、テストスクリプトが実行する「テスト対象のクラスやメソッド」のことを指します。
+
+SUTという言葉を抑えたところでさっそくテスト自動化のゴールを見ていきましょう。
+
+## Tests should help us improve quality.（品質向上）
+テストをすることで代表的な理由は、品質保証（Quality Assurance）です。
+
+### Tests as Specification （"仕様"としてのテスト）
+テスト駆動開発（Test-Driven Development, TDD）やテストファーストを行った場合、SUT作成前に、テストによって **SUTが何をするべきなのか** を把握できます。「正しいソフトウェアを構築している」ことを確実とするために、テストには **「SUTがどのように使われるか」** を反映させなければなりません。「SUTがどのように使われるか」をテストに反映させようとすることで、あいまいな要求や自己矛盾に開発者自身が気付けます。それによって、**"仕様"（Specification）の質** が向上し、結果として **ソフトウェアの品質向上** につながります。
+
+### Bug Repellent（バグよけ）
+テストによってバグが見つかります。しかし、自動テストの目的はバグを見つけることではありません。
+自動テストは **新たにバグが入り込むことを防ぐ** ことを目的としています。実行される回帰テスト（*Regression Test*）がバグをピンポイントで指摘するため、バグが入りこなくなります。
+
+### Defect Localization
+それぞれのユニットテストが十分に小さい場合、テストの失敗結果によってバグをすばやく特定できます。顧客テスト（受け入れテスト）では、 **動作がおかしい** ことを検知する一方、ユニットテストは **なぜおかしい** のかを伝えてくれます。この利点を本書では *Defect Localization* と呼んでいます。
+
+また、「顧客テストは失敗しているがユニットテストは成功している」という状況を、[Missing Unit Test](http://xunitpatterns.com/Production%20Bugs.html#Missing%20Unit%20Test)と呼びます。*Defect Localization* はすばらしい利点です。しかし、考えうるすべてのシナリオに対してユニットテストを書かないと達成できません。
+
+## Tests should help us understand the SUT.（SUTの理解促進）
+テストは、テストの読み手に対して **「コードがどのように機能するか」** を示せます。
+
+### Tests as Documentation（"ドキュメント"としてのテスト）
+
 
 ## Tests should reduce (and not introduce) risk.
 
