@@ -1,6 +1,7 @@
 # TL;DR
 - 自動ユニットテストが何を目指すべきかを『[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)』から抑える
-- テストの自動化の目的は、「コスト削減」・「品質の向上」・「コードへの理解の向上」
+- 自動ユニットテストの構築・維持にはコストがかかるが、テストがもたらす節約コストと相殺される（「**テストの経済性**」）
+- テストの自動化の目的は、「コスト削減」・「品質の向上」・「コードへの理解の向上」。これを具体的に見ていく
 
 # 『xUnit Test Patterns』 とは
 『[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)』とは、2007年に発売された書籍です。自動ユニットテストにおける原則・パターンなどが体系的にまとめられています。
@@ -130,7 +131,7 @@ SUTという言葉を抑えたところでさっそくテスト自動化のゴ�
 プロダクトはリリース後要件が変化し、コードに対してもさまざまな変更が加えられます。そのため、 **ひとつの変更に対して影響を受けるテストの数が少ない** ようにテストを記述するのが望ましいです。これを実現するためには、 **テスト間の重複を最小限** にしなければなりません。
 
 # まとめ
-以上、自動ユニットテストにおける「目指すべきゴール」を見ていきました。これらを目指していくことによって、経済性の高い有効なユニットテストがあるプロダクトを目指してみてはいかがでしょうか。
+以上、自動ユニットテストにおける「目指すべきゴール」を見ていきました。もし、現場のユニットテストにおいて課題感を感じている方がいれば、「目指すべきゴール」に進めているか振り返ってみてはいかがでしょうか。
 
 # Next
 『[xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)』では、 **自動ユニットテストの原則** ・ **自動ユニットテストにおけるアンチパターン** についても言及されています。
@@ -140,6 +141,8 @@ SUTという言葉を抑えたところでさっそくテスト自動化のゴ�
 - [xUnit Test Patternsから学ぶテストアンチパターン on Speaker Deck](https://speakerdeck.com/hgsgtk/testing-anti-pattern-learned-in-xunit-test-pattern)
 
 # References
+以下、今回のエントリで参考にした書籍・記事を掲載しておきます。
+
 ## Books
 - [xUnit Test Patterns: Refactoring Test Code](https://www.amazon.co.jp/dp/0131495054/ref=cm_sw_r_tw_dp_U_x_Y8kJCb6EX02F6)
 
