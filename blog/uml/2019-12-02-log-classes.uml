@@ -1,0 +1,25 @@
+@startuml
+
+left to right direction
+
+interface LoggerInterface
+class QueryLogger
+class NullLogger
+
+LoggerInterface <|-- QueryLogger
+LoggerInterface <|-- NullLogger
+
+interface LoggerAwareInterface
+
+LoggerAwareInterface --> LoggerInterface
+
+class Connection {
+  logger
+  setLogger()
+}
+interface ConnectionInterface
+
+ConnectionInterface <|-- Connection
+ConnectionInterface ..|> LoggerAwareInterface
+
+@enduml
