@@ -21,3 +21,8 @@ TBD
 ## ローカルでの検証方法
 
 TBD
+
+refs:
+- https://github.com/squizlabs/PHP_CodeSniffer
+- https://techblog.istyle.co.jp/archives/4143
+- https://github.com/hgsgtk/mpunit/pull/7
