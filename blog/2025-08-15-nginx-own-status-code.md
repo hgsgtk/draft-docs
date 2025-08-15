@@ -231,6 +231,19 @@ This indicates that the nginx server recognizes the client has closed the connec
 
 ## Conclusion
 
+Understanding HTTP status codes is fundamental for SREs, but Nginx's custom status codes add another layer of complexity that's crucial for effective troubleshooting and monitoring. While RFC 9110 defines the standard range of 100-599, Nginx extends this with proprietary codes like 444, 494-497, and 499 to handle specific scenarios that aren't covered by the standard.
+
+The key takeaway is that Nginx-specific status codes serve distinct purposes:
+
+- **444 No Response**: A security-focused code that immediately closes connections without sending HTTP responses, ideal for blocking malicious requests
+- **494-497 SSL-related codes**: Handle various SSL/TLS certificate and protocol issues that standard HTTP codes can't adequately represent
+- **499 Client Closed Request**: Logs when clients disconnect before receiving HTTP headers, providing visibility into connection stability issues
+
+These custom codes are particularly valuable for SREs because they offer granular visibility into connection handling, security events, and client behavior patterns. When you see a 499 in your logs, you know the client disconnected early in the request lifecycle. A 444 indicates a deliberate security measure was triggered. This level of detail helps distinguish between server errors, client issues, and intentional security actions.
+
+For production environments, monitoring these Nginx-specific status codes alongside standard HTTP responses gives you a complete picture of your application's health and security posture. They're not just logging artifacts—they're actionable signals that can help you identify connection issues, security threats, and performance bottlenecks before they impact your users.
+
+Remember that while these codes aren't part of the HTTP standard, they're essential tools in the Nginx ecosystem for building robust, secure, and observable web applications.
 
 ## Appendix
 
